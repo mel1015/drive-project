@@ -1,23 +1,38 @@
 <?php
-  session_start();
-  $conn = mysqli_connect('localhost', 'root', 4987);
-  mysqli_select_db($conn, "cloud");
-  $result = mysqli_query($conn, "SELECT * FROM data");
+  require("config/config.php");
+  require("lib/db.php");
 
-  while($row = mysqli_fetch_assoc($result)) {
+  session_start();
+
+  $conn = db_init($config["host"], $config["duser"],
+    $config["dpw"], $config["dname"]);
+  mysqli_select_db($conn, "cloud");
+  $result = mysqli_query($conn, "SELECT * FROM user");
+
+  //Escaping
+  $name = mysqli_real_escape_string($conn, $_POST['sign_up_username']);
+  $password = mysqli_real_escape_string($conn, $_POST['sign_up_password']);
+
+  while($row = mysqli_fetch_assoc($result))
+  {
     $id_check = false;
-    if($row['username'] === $_POST['sign_up_username']) {
+    if($row['name'] === $name)
+    {
       $id_check = true;
       break;
     }
   }
-  if($id_check != true) {
-    $sql = "INSERT INTO data (username,password) VALUES('".$_POST['sign_up_username']."', '".$_POST['sign_up_password']."')";
+  if($id_check != true)
+  {
+    $sql = "INSERT INTO user (name,password)
+      VALUES('".$name."', '".$password."')";
     $result = mysqli_query($conn, $sql);
+
     header('Location: http://localhost/cloud/main.php');
   }
-  if($id_check == true) {
+  if($id_check == true)
+  {
     header('Location: http://localhost/cloud/sign_up.php');
   }
-  $_SESSION['id_check']=$id_check;
+  $_SESSION['id_check'] = $id_check;
 ?>
