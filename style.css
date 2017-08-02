@@ -4,6 +4,17 @@
 #logo {
   width: 150px;
 }
-#nav {
-  border-right: 1px solid gray;
+#file {
+  border-left: 2px solid gray;
+}
+#load {
+  float: right;
+}
+article img {
+  width: 150px;
+  height: 150px;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
 }

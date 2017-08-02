@@ -15,7 +15,7 @@
   $dirs->close(); // 닫기
 
   $dircnt = count($entrys['dir']); // 폴더 수
-  $filecnt = count($entrys['file']); // 파일 수
+  // $filecnt = count($entrys['file']); // 파일 수
 ?>
 <!DOCTYPE html>
 <html>
@@ -41,31 +41,48 @@
 
       <div class="row">
 
-        <nav class="col-md-2" id="nav">
+        <nav class="col-md-2">
           <ol class="nav nav-pills nav-stacked">
             <?php
               $index = 0;
-              while($index < $dircnt) {
-                echo '<li><h4>'.htmlspecialchars($entrys['dir'][$index]).'</h4></li>';
+              while($index < $dircnt)
+              {
+                echo '<li><h3>'.htmlspecialchars($entrys['dir'][$index]).'</h3></li>';
                 $index++;
               }
             ?>
           </ol>
         </nav>
 
-        <div class="col-md-10">
+        <div class="col-md-10" id="file">
+
+          <div class="btn-group" role="group" aria-label="..." id="load">
+            <input type="button" class="btn btn-default" value="업로드">
+            <input type="button" class="btn btn-default" value="다운로드">
+          </div>
 
           <article>
 
-            <h4>
-              로그인을 환영합니다.
               <?php
-              session_start();
-              $myusername = $_SESSION['myusername'];
-              echo $myusername."님";
+                session_start();
+                $myusername = $_SESSION['myusername'];
+                echo "<h4>로그인을 환영합니다. ".$myusername."님</h4><br>";
+                if($handle = opendir('user/shin'))
+                {
+                  while(false !== ($entry = readdir($handle)))
+                  {
+                    if($entry != '.' && $entry !='..')
+                    {
+                      if(strchr($entry, ".jpg") || strchr($entry, ".png") == true)
+                      {
+                        // echo "<div>파일명 : $entry</div>";
+                        echo "<img src='./user/shin/$entry'/>";
+                      }
+                    }
+                  }
+                  closedir($handle);
+                }
               ?>
-            </h4>
-            <a href="http://localhost/cloud/main.php">홈으로</a>
 
           </article>
         <!-- div : col-md-9   -->
