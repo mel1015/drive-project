@@ -1,20 +1,24 @@
 <?php
-  $path = "user/shin"; // 오픈하고자 하는 폴더
-  $entrys = array(); // 폴더내의 정보를 저장하기 위한 배열
-  $dirs = dir($path); // 오픈하기
-  while(false !== ($entry = $dirs->read()))
-  { // 읽기
+  $path = "user/shin";  //오픈하고자 하는 폴더
+  $entrys = array();    //폴더내의 정보를 저장하기 위한 배열
+  $dirs = dir($path);   //오픈하기
+  $folder = array();
+  while(false !== ($entry = $dirs->read()))   //읽기
+  {
     if(($entry != '.') && ($entry != '..'))
     {
-      if(is_dir($path.'/'.$entry)) // 폴더이면
+      if(is_dir($path.'/'.$entry))  //폴더이면
+      {
         $entrys['dir'][] = $entry;
+        $folder[] = $entry;
+      }
       else // 파일이면
         $entrys['file'][] = $entry;
     }
   }
-  $dirs->close(); // 닫기
+  $dirs->close();   //닫기
 
-  $dircnt = count($entrys['dir']); // 폴더 수
+  $dircnt = count($entrys['dir']);  //폴더 수
   // $filecnt = count($entrys['file']); // 파일 수
 ?>
 <!DOCTYPE html>
@@ -47,7 +51,7 @@
               $index = 0;
               while($index < $dircnt)
               {
-                echo '<li><h3>'.htmlspecialchars($entrys['dir'][$index]).'</h3></li>';
+                echo "<li><a href='$path/$folder[$index]'><h3>".htmlspecialchars($folder[$index])."</h3></a></li>";
                 $index++;
               }
             ?>
@@ -56,10 +60,15 @@
 
         <div class="col-md-10" id="file">
 
-          <div class="btn-group" role="group" aria-label="..." id="load">
-            <input type="button" class="btn btn-default" value="업로드">
-            <input type="button" class="btn btn-default" value="다운로드">
-          </div>
+          <form action="http://localhost/cloud/upload.php" method="post" enctype="multipart/form-data">
+
+            <div class="btn-group" role="group" aria-label="..." id="load">
+              <input type="file" name="profile">
+              <input type="submit" class="btn btn-default" value="업로드">
+              <input type="button" class="btn btn-default" value="다운로드">
+            </div>
+
+          </form>
 
           <article>
 
@@ -67,6 +76,7 @@
                 session_start();
                 $myusername = $_SESSION['myusername'];
                 echo "<h4>로그인을 환영합니다. ".$myusername."님</h4><br>";
+
                 if($handle = opendir('user/shin'))
                 {
                   while(false !== ($entry = readdir($handle)))
